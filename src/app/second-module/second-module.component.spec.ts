@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SecondModuleComponent } from './second-module.component';
+import { ActivatedRoute } from '@angular/router';
+import { ActivatedRouteStub } from '../auth-page/auth-page.component.spec';
 
 describe('SecondModuleComponent', () => {
   let component: SecondModuleComponent;
@@ -8,7 +10,8 @@ describe('SecondModuleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SecondModuleComponent ]
+      declarations: [ SecondModuleComponent ],
+      providers: [{provide: ActivatedRoute, useValue: ActivatedRouteStub}]
     })
     .compileComponents();
 
