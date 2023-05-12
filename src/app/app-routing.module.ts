@@ -7,11 +7,11 @@ import { accessResolver } from './resolvers/access.resolver';
 
 const routes: Routes = [
   {path: '', component: DashboardComponent},
-  {path: '', canActivateChild: [authGuard], children: [
+  {path: '', children: [
     {
       path: 'auth/page',
       component: AuthPageComponent,
-      // canActivate: [authGuard]
+      canActivate: [authGuard]
     },
     { path: 'second-module', loadChildren: () => import('./second-module/second-module.module').then(m => m.SecondModuleModule) },
     {path: '**', redirectTo: ''}
