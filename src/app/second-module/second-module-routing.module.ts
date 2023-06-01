@@ -1,11 +1,14 @@
-import { NgModule } from '@angular/core';
+import { NgModule, inject } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SecondModuleComponent } from './second-module.component';
 import { SeconCompComponent } from './secon-comp/secon-comp.component';
+import { authGuard } from '../guards/auth/auth.guard';
+import { PermServiceService } from '../services/perm-service/perm-service.service';
+import { clickGuard } from '../resolvers/click/click.resolve.factory';
 
 const routes: Routes = [
-  { path: '', component: SecondModuleComponent },
-  { path: 'comp', component: SeconCompComponent}
+  { path: ':id', component: SecondModuleComponent, children: [
+  { path: 'comp', component: SeconCompComponent, data:{value: true}, canActivate: [clickGuard, authGuard]}]}
 ];
 
 @NgModule({

@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardComponent } from './dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { PermServiceService } from '../services/perm-service/perm-service.service';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -10,7 +12,11 @@ describe('DashboardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ DashboardComponent ],
-      imports: [HttpClientModule]
+      imports: [ RouterModule ],
+      providers: [
+        {provide: PermServiceService, useValue: {}},
+        {provide: ActivatedRoute, useValue: {}}
+      ]
     })
     .compileComponents();
 

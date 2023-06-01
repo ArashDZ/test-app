@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subscriber, Subscription, catchError, of, take } from 'rxjs'
+import { Observable, Subscriber, Subscription, catchError, of, share, take } from 'rxjs'
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PermServiceService {
 
   constructor(private http: HttpClient) { }
@@ -13,6 +11,8 @@ export class PermServiceService {
 
   rolesProcess: Observable<any> | undefined;
 
+  clicked = false;
+
   checkPerm (route: string): Observable<boolean> {
     if (route.match('comp$'))
       return of(true);
@@ -20,41 +20,23 @@ export class PermServiceService {
   }
 
   // Using IIFE to encapsulate roleProcess and subList
-  getRoles: () => {ready: true, result: string[]} | {ready: false, result: Observable<any>} = this.getRolesIIFE(); 
+  getRoles() : {ready: true, result: string[]} | {ready: false, result?:Observable<any>} {
+    if (this.roles)
+      return {ready: true, result: this.roles};
+
+    if (!this.rolesProcess)
+      return {ready: false};
+
+    return {ready: false, result: this.rolesProcess}
+  }
   
 
-  private getRolesIIFE () {
-
-    let rolesProcess: Observable<any> | undefined;
-    let subList: Subscriber<any>[] = [];
-
-    return ((): {ready: true, result: string[]} | {ready: false, result: Observable<any>} => {
-      if (this.roles)
-        return {ready: true, result: this.roles}
-
-      if (rolesProcess)
-        return {ready: false, result: rolesProcess}
-
-      subList = [];
-
+  private setRoles() {
+    this.rolesProcess = new Observable<any>((sub) => {
       this.http.get('http://localhost:88/Api/CheckPerm').pipe(take(1)).subscribe({ error: (err) => {
-        subList.forEach(x => {
-          this.roles = ['assd']
-          x.next(this.roles);
-          x.unsubscribe();
-        })
-
-        subList = [];
-      }});
-
-      rolesProcess = new Observable<any> ((sub: Subscriber<any>) => {
-        subList.push(sub);
-        return () => sub.unsubscribe();
-      })
-
-      return {ready: false, result: rolesProcess};
-
-    })
+      sub.next(['ads']);
+    }});
+    }).pipe(share())
   }
 
 

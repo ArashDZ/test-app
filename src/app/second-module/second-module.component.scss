@@ -1,0 +1,15 @@
+a {
+    color: blue;
+    background-color: #fcb;
+    // box-shadow: #da9 0 0 3px 1px;
+    border-radius: 3px;
+    margin: 15px;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.active {
+    color: blue;
+    background-color: #da9;
+    box-shadow: #247 inset 0 0 3px 0;
+}

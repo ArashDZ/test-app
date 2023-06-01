@@ -1,13 +1,16 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { map } from 'rxjs';
+import { Observable, from, map } from 'rxjs';
 import { PermServiceService } from 'src/app/services/perm-service/perm-service.service';
 
 export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-
+  
   let permService = inject(PermServiceService);
   let router = inject(Router);
 
+  console.log('authGuard');
+  return permService.clicked?true:router.parseUrl('');
+/*
   // console.log(route, state);
   console.log(state.url);
   
@@ -20,14 +23,13 @@ export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: R
     console.log(result);
     return result;
   }
-    
 
-  return roles.result.pipe(map ( (res) => {
-    console.log("in map", res);
-    
-    if (res.includes('assd'))
-      return true;
-
+  if (!roles.result)
     return router.parseUrl('/');
+
+  return from(roles.result).pipe(map((res) => {
+    return res.includes('asd')?true:router.parseUrl('/');
   }))
+
+  */
 };

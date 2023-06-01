@@ -1,6 +1,11 @@
-<p>second-module works!</p>
-<h1 style="color: red;" *ngIf="!access" >Inaccessible</h1>
+<p>second-module works! id: {{id}}</p>
+<!-- <h1 style="color: red;" *ngIf="!access" >Inaccessible</h1> -->
 
-<a routerLink="/">Home</a>
-<br>
-<a routerLink="./comp">comp</a>
+<nav>
+    <a routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page">Home</a>
+    <a routerLink="./comp" routerLinkActive="active" ariaCurrentWhenActive="page" >comp</a>
+    <a routerLink="/second-module/54" routerLinkActive="active" ariaCurrentWhenActive="page" >self</a>
+    <a routerLink="/third-module">third</a>
+</nav>
+
+<router-outlet></router-outlet>
