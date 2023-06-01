@@ -17,7 +17,8 @@ import { LogLoadingInterceptor } from './interceptors/loading/loading.intercepto
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: LogLoadingInterceptor, multi: true}
