@@ -7,6 +7,8 @@ import { AuthPageComponent } from './auth-page/auth-page.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { LogLoadingInterceptor } from './interceptors/loading/loading.interceptor';
+import { PermServiceService } from './services/perm-service/perm-service.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,8 @@ import { LogLoadingInterceptor } from './interceptors/loading/loading.intercepto
     BrowserAnimationsModule
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: LogLoadingInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: LogLoadingInterceptor, multi: true},
+    PermServiceService,
   ],
   bootstrap: [AppComponent]
 })
