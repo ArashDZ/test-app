@@ -1,0 +1,11 @@
+<div class="container">
+    <div class="header" [matTooltip]="loadingData ? 'Loading more' :  'Scroll down to load more'" matTooltipPosition="right" matTooltipClass="load-tooltip" >
+        <label class="label" [innerText]="label" > </label>
+        <mat-icon *ngIf="loadingData" fontIcon="schedule"></mat-icon>
+    </div>
+    <mat-list class="list" (scroll)="nextPage($event)" id="mat-list">
+        <mat-list-item *ngFor="let item of items" class="list-item" >
+            {{item}}
+        </mat-list-item>
+    </mat-list>
+</div>

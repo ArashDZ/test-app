@@ -1,11 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscriber, Subscription, catchError, of, share, take } from 'rxjs'
+import { ExpiredDialogComponent } from 'src/app/expired-dialog/expired-dialog.component';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PermServiceService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private dialog: MatDialog) { }
 
   roles: string[] | undefined;
 
@@ -19,7 +23,6 @@ export class PermServiceService {
     return this.http.post<boolean>('http://localhost:88/Api/CheckPerm', {route}, {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}).pipe(catchError(err => of(false)))
   }
 
-  // Using IIFE to encapsulate roleProcess and subList
   getRoles() : {ready: true, result: string[]} | {ready: false, result?:Observable<any>} {
     if (this.roles)
       return {ready: true, result: this.roles};
@@ -28,6 +31,17 @@ export class PermServiceService {
       return {ready: false};
 
     return {ready: false, result: this.rolesProcess}
+  }
+
+  openDialog(): void {
+    let dialogRef = this.dialog.open(ExpiredDialogComponent, {disableClose: true, direction: 'rtl'});
+
+    dialogRef.afterClosed().subscribe(res => {
+      console.log("Idk");
+      
+    })
+
+    // setTimeout(() => dialogRef.close(), 2000)
   }
   
 

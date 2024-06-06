@@ -1,0 +1,5 @@
+<mat-form-field>
+    <mat-label [innerText]="label"></mat-label>
+    <input matInput autocomplete="off" [formControl]="inputControl"  name="asd" type="text" (input)="onInput($any($event))" [placeholder]="label + '...'" >
+    <mat-hint [align]="'end'" *ngFor="let validation of validations" [innerText]="validation.message + ' | '" [class]="validation.hintClass" ></mat-hint>
+</mat-form-field>

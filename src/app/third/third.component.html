@@ -3,6 +3,8 @@
 <a routerLink="/second-module/12">second</a>
 <br>
 <a routerLink="/">Home</a>
+<br>
+<a routerLink="./" (click)="subm($any({valid: false}))">subm</a>
 
 <br>
 <br>
@@ -20,3 +22,5 @@
         content 2
     </mat-tab>
 </mat-tab-group>
+
+<b>{{counter}}</b>

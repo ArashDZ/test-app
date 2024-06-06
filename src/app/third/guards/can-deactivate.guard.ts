@@ -1,4 +1,4 @@
-import { Component, HostListener, Inject, inject } from '@angular/core';
+import { Component, EnvironmentInjector, HostListener, Inject, inject } from '@angular/core';
 import { CanDeactivateFn } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -7,11 +7,16 @@ import { MatCommonModule } from '@angular/material/core';
 import { map } from 'rxjs';
 import { ThirdComponent } from '../third.component';
 
-export const canDeactivateGuard: CanDeactivateFn<ThirdComponent> = (component, currentRoute, currentState, nextState) => {
-  if (component.confirmLeave == false)
+export const canDeactivateGuard = (component?: any, currentRoute?: any, currentState?: any, nextState?: any) => {
+  console.log(component);
+  // console.log(inject(ThirdComponent));
+    
+  if (component?.confirmLeave == false)
     return true;
+
+  
   const dialog = inject(MatDialog)
-  const dialogRef = dialog.open<CanDeactivateThirdPopup, any, boolean>(CanDeactivateThirdPopup, {width: '500px', height: 'max-content', autoFocus: 'dialog', data: {from: currentState.url, to: nextState.url}});
+  const dialogRef = dialog.open<CanDeactivateThirdPopup, any, boolean>(CanDeactivateThirdPopup, {width: '500px', height: 'max-content', autoFocus: 'dialog', data: {from: currentState?.url, to: nextState?.url}});
   return dialogRef.afterClosed().pipe(map(x => x ?? false));
 };
 

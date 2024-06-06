@@ -1,0 +1,16 @@
+.input {
+    margin: 20px;
+    border: 1px solid black;
+    outline: none;
+    border-radius: 3px;
+    width: 300px;
+    min-height: 100px;
+    resize: vertical;
+    overflow: auto;
+    background-color: white;
+
+
+    &:focus {
+        outline: 2px solid #6666f3;
+    }
+}

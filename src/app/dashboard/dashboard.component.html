@@ -1,7 +1,30 @@
 <!-- <div> -->
   <a [routerLink]="'/auth/page'" >auth page</a><br>
   <a [routerLink]="'/second-module/22'" >second-module</a><br>
-  <a [routerLink]="'second-module/comp'" >second/comp</a><br>
-  <a [routerLink]="'/third-module'" style="text-decoration: none; color: black;" >third-module</a><br>
+  <a [routerLink]="'second-module/ /comp'" >second/comp</a><br>
+  <a [routerLink]="'/third-module/third-child'" style="text-decoration: none; color: black;" >third-module</a><br>
   <a>third/comp</a><br>
 <!-- </div> -->
+<br>
+<form #form="ngForm" >
+  sad
+  <mat-form-field>
+  <mat-select [(value)]="val" (valueChange)="log($event)">
+    <mat-option value="1" title="as"> sadas</mat-option>
+    <mat-option value="2" title="qw">dsadsa</mat-option>
+  </mat-select>
+  </mat-form-field>
+  
+  <button type="submit" [disabled]="form.invalid">submit</button>
+  <button type="button" (click)="toggleWrp()">clear</button>
+
+  <br>
+  <app-input-wrap *ngIf="sWrp" #inpwrp [(ngModel)]="inp" name="inp-wr" [minlength]="5" (ngModelChange)="checkInp($event)" [required]="true" ></app-input-wrap>
+
+</form>
+<!-- <lib-img></lib-img> -->
+<lib-immmg></lib-immmg>
+<!-- <img alt="dash-image" src="img/assets/images/lubo-minar-j2RgHfqKhCM-unsplash.jpg"> -->
+<div>real value: {{inp}}</div>
+<img [src]="src">
+<input (input)="checkInp($any($event))">

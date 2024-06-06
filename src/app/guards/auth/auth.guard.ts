@@ -8,8 +8,11 @@ export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: R
   let permService = inject(PermServiceService);
   let router = inject(Router);
 
-  console.log('authGuard');
-  return permService.clicked?true:router.parseUrl('');
+  console.log('canActivate');
+  console.log(state);
+  console.log(route);
+  return true;
+  // return permService.clicked?true:router.parseUrl('');
 /*
   // console.log(route, state);
   console.log(state.url);

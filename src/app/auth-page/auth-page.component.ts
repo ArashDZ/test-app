@@ -8,7 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AuthPageComponent implements OnInit, OnDestroy {
 
-  access = false; 
+  access = false;
+  denyPattern = [{pattern: /^(?:[0-9]{1,3}\.){0,3}[0-9]{0,3}$/, message: "Only Ip"}, {pattern: /^[1-5\.]*$/, message: "smoll nums"} ]
 
   ngOnInit(): void {
     
@@ -21,6 +22,7 @@ export class AuthPageComponent implements OnInit, OnDestroy {
       console.log('access',this.access)  
     })
   }
+  
   ngOnDestroy(): void {
     console.log("aupa destroy");
     

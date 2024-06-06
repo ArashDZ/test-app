@@ -1,1 +1,11 @@
 <router-outlet></router-outlet>
+
+
+
+<div [ngStyle]="{width: '100vw', 'height': '100vh', position: 'fixed', top: 0, left: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: -5}">
+    <div [ngStyle]="{borderRadius: '5px', border: '2px purple dotted', width: 'max-content', height: 'max-content', maxWidth: '70vw', maxHeight: '70vh', zIndex: 100}">
+        <router-outlet name="popup" #popup="outlet" ></router-outlet>
+    </div>
+</div>
+
+<div *ngIf="popup.isActivated">asdas</div>

@@ -3,9 +3,21 @@
 
 <nav>
     <a routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page">Home</a>
-    <a routerLink="./comp" routerLinkActive="active" ariaCurrentWhenActive="page" >comp</a>
-    <a routerLink="/second-module/54" routerLinkActive="active" ariaCurrentWhenActive="page" >self</a>
-    <a routerLink="/third-module">third</a>
+    <a [routerLink]="['/third-module', {outlets:{popup:['comp']}}]" routerLinkActive="active" ariaCurrentWhenActive="page" >comp</a>
+    <a [routerLink]="['', {outlets: {popup: null}}]" routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{exact: true}" >self</a>
+    <a routerLink="/third-module/third-child">third</a>
 </nav>
 
-<router-outlet></router-outlet>
+<br>
+
+<p (click)="goToHome()" >root's been working for {{seconds}} seconds!</p>
+
+
+<router-outlet #child="outlet" ></router-outlet>
+
+<router-outlet name="popup" ></router-outlet>
+
+
+<app-test-list label="Random List" [dataSource]="getData" [pageSize]="5" ></app-test-list>
+
+<app-secon-comp [obj]="obj" ></app-secon-comp>

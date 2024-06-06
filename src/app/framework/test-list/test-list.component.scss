@@ -1,0 +1,53 @@
+
+:host {
+    display: block;
+    width: max-content;
+    height: max-content;
+    
+  .container {
+        margin: 5px;
+        width: max-content;
+        box-shadow: 1px 1px 6px 1px gray;
+        border-radius: 3px;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        background-color: white;
+        
+        .header {
+            background-color: #eee;
+            padding: 0 5px 5px 5px;
+            margin: 0 5px 5px 5px;
+            box-shadow: 0 3px 4px -2px gray;
+            border-radius: 0;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+
+            .label {
+                display: inline-block;
+                margin: 6px;
+            }
+            
+        }
+        
+        .list {
+            // border-radius: 3px;
+            // border: 1px black solid;
+            height: 500px;
+            width: 300px;
+            overflow-y: scroll;
+            &::-webkit-scrollbar {
+                display: none   ;
+            }
+        
+            .list-item {
+                box-shadow: 0 1px 4px -2px gray;
+            }
+        }
+        
+    }
+}
+
+mat-icon {
+    margin-bottom: -4px;
+}
+

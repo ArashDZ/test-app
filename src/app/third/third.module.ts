@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {MatTabsModule} from '@angular/material/tabs'
@@ -7,11 +7,13 @@ import { ThirdComponent } from './third.component';
 import { SecondService } from '../services/second/second.service';
 import { AbstractLogService } from '../services/second/abstract-log.service';
 import { ThirdLogService } from './services/third-log.service';
+import { OutletComponent } from './outlet/outlet.component';
 
 
 @NgModule({
   declarations: [
-    ThirdComponent
+    ThirdComponent,
+    OutletComponent
   ],
   imports: [
     CommonModule,
@@ -20,8 +22,13 @@ import { ThirdLogService } from './services/third-log.service';
     ThirdRoutingModule
   ],
   providers: [
-    SecondService,
+    // SecondService,
     {provide: AbstractLogService, useClass: ThirdLogService}
   ]
 })
-export class ThirdModule { }
+export class ThirdModule { 
+  constructor (private inj: Injector) {
+    console.log('third module activated');
+    
+  }
+}
