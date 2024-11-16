@@ -1,8 +1,7 @@
 
-import { AfterViewInit, Component, ElementRef, OnInit, Optional, Self, ViewChild } from '@angular/core';
-import { ControlContainer, ControlValueAccessor, FormGroup, NgControl, NgForm } from '@angular/forms';
-
-const OBJECT_HTML =  ` <span contenteditable="false" style="background-color: #dd73ba; color: white; border-radius: 2px; box-shadow: 1px 1px 2px 1px gray;" >DB Link</span> `;
+import { AfterViewInit, Component, ElementRef, forwardRef, Input, OnInit, Optional, Self, ViewChild } from '@angular/core';
+import { ControlContainer, ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR, NgControl, NgForm } from '@angular/forms';
+import { Block } from '../model/block';
 
 @Component({
   selector: 'app-input-wrap',
@@ -12,16 +11,20 @@ const OBJECT_HTML =  ` <span contenteditable="false" style="background-color: #d
 })
 export class InputWrapComponent implements ControlValueAccessor, OnInit, AfterViewInit {
 
-  @ViewChild('input') input!: ElementRef;
+  @ViewChild('input') input!: ElementRef<HTMLDivElement>;
+
+  @Input() items: Block[] = [];
 
   disabled: boolean = false;
 
-  onChange = (value: string) => {}
+  private pendingValue: string | null = null;
+
+  onChange = (value: string | undefined) => {}
 
   onTouched = () => {}
 
   constructor(
-    @Self() @Optional() private ngControl:  NgControl | null,
+    @Self() @Optional() ngControl:  NgControl | null,
     ) {
       if (!ngControl) {
         console.warn("Input Wrap Component Used Outside of a Form");
@@ -36,48 +39,24 @@ export class InputWrapComponent implements ControlValueAccessor, OnInit, AfterVi
   }
 
   ngAfterViewInit(): void {
-    if (!this.ngControl?.control) {
+    if (this.pendingValue != null) {
+      this.onInput(this.pendingValue);
+      this.pendingValue = null;
       return;
     }
-
-    // const inputElement = this.input.nativeElement as HTMLElement;
-    // inputElement.addEventListener('input', function(event: Event) {
-    //   console.log(event);
-    //   console.log(this);
-      
-    // })
-
-    /*
-    // (Monkey Patch) Propagate Untouch to children
-    const markAsUntouchedOriginal = this.ngControl.control.markAsUntouched;
-    this.ngControl.control.markAsUntouched = () => {
-      markAsUntouchedOriginal.apply(this.ngControl?.control);
-      this.input.control.markAsUntouched();
-    }
-
-    // (Monkey Patch) Propagate pristine to children
-    const markAsPristineOriginal = this.ngControl.control.markAsPristine;
-    this.ngControl.control.markAsPristine = () => {
-      markAsPristineOriginal.apply(this.ngControl?.control);
-      console.log('pris')
-      this.input.control.markAsPristine();
-    }
-    */
-
   }
 
   writeValue(newValue: string | null): void {
-    const inputElement = this.input.nativeElement as HTMLDivElement;
-    inputElement.innerHTML = newValue ?? "";
-    this.onInput({target: inputElement});
+    if (!this.input) {
+      this.pendingValue = newValue;
+      return;
+    }
+
+    this.onInput(newValue || '');
   }
 
-  registerOnChange(fn: (velue: string) => void): void {
+  registerOnChange(fn: any): void {
     this.onChange = fn;
-  }
-
-  informChange(target: EventTarget | null) {
-    this.onChange((target as HTMLInputElement)?.value ?? "")
   }
 
   registerOnTouched(fn: () => void): void {
@@ -88,81 +67,99 @@ export class InputWrapComponent implements ControlValueAccessor, OnInit, AfterVi
     this.disabled = isDisabled;
   }
 
-  private revertStr(inner: string): string {
-    // console.log("REVERT------------------");
-    // console.log(inner);
+  public addBlock(block: Block) {
+    const currentValue = this.removeBlocks(this.input.nativeElement.innerHTML);
+    const carretPosition = this.getCaretPosition();
 
-    let sp = inner.replaceAll(/(?:&nbsp;|\xa0)/g, ' ');
+    if (carretPosition == null) {
+      this.onInput(currentValue + block.value);
+      return;
+    };
 
-    // console.log(sp);
-    // console.log(sp.includes(OBJECT_HTML));
-
-    const cleanHtml = this.cleanHtml(OBJECT_HTML);
-    
-    // console.log('"'+OBJECT_HTML+'"');
-    // console.log('"'+cleanHtml+'"');
-    
-
-    let result = sp.replaceAll(cleanHtml, '###');
-    
-    // console.log(result);
-    
-    // console.log("------------------");
-
-    return result;
-
-    
+    this.onInput(currentValue.slice(0, carretPosition) + block.value + currentValue.slice(carretPosition))
   }
 
-  private getPosition (input: HTMLInputElement): {node: number, offset: number} {
-    
-    const sel = window.getSelection();
-
-    const inner = input.innerHTML.replaceAll(/(?:&nbsp|\xa0)/g, ' ');
-
-    // console.log(inner);
-    
-    const initialOffset = sel!.focusOffset;
-
-    // console.log(initialOffset);    
-    
-    let spans = inner.substring(0, initialOffset).match(/(?:\s|^)###(?:\s|$)/);
-
-    // console.log(spans);
-    // console.log(spans?.at(-1));
-    
-    let a: RegExpMatchArray
-    if (!spans || spans.length == 0)
-      return {node: 0, offset: initialOffset};
-
-    let offset = initialOffset - Number((spans as any).index) -4
-
-    let node = spans.length * 2;
-
-    return {offset, node};
+  private getBlock ({title, color, value}: Block): string {
+    return this.cleanHtml(
+      `<span contenteditable="false" id="block-${value}" style="background-color: ${color};" class="block" >${title}</span>`
+    );
   }
 
-  private setPosition(initialPos: {node: number, offset: number}, input: HTMLElement) {
+  private removeBlocks(html: string): string {
+    html = html.replace(/(?:&nbsp;|\xa0)/g, ' ');
+
+    for (const item of this.items) {
+      // const blockHtml = this.getBlock(item);
+      const blockRegex = new RegExp(`<span[^>]*id="block-${item.value}"[^>]*>[\s\n\r]*${item.title}[\s\n\r]*</span>`, 'gs');
+      html = html.replace(blockRegex, item.value);
+    }
+    
+    return html;
+  }
+
+  private setBlocks(html: string) {
+    html = this.removeBlocks(html);
+
+    for (const item of this.items) {
+      const blockHtml = this.getBlock(item);
+
+      html = html.replaceAll(item.value, blockHtml);
+    }
+
+    return html;
+  }
+
+
+  private setSelectionRange(node: Node, offset: number): void {
     const sel = window.getSelection();
-      if (sel) {
-        // console.log(input.childNodes);
-        // console.log(initialPos);
-  
-        try {
-          const range = document.createRange();
-          range.setStart(input.childNodes[initialPos.node], initialPos.offset);
-          // range.setEnd(input.childNodes[0], offset);
-          range.collapse(true);
+    if (sel == null) return;
 
-          sel.removeAllRanges();
-          sel.addRange(range);
+    const range = document.createRange();
+    range.setStart(node, offset);
 
-          range.detach(); 
-        }
-        catch (ex) {
-          console.error(ex);
-        }
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    range.detach();
+    return;
+  }
+
+  private setPosition(position: number) {
+    let carretPosition = 0;
+    const childNodes = Array.from(this.input.nativeElement.childNodes);
+
+    for (const [index, node] of childNodes.entries()) {
+      if (node instanceof HTMLDivElement) {
+        childNodes.splice(index + 1, 0, ...Array.from(node.childNodes));
+        continue;
       }
+
+      if (node instanceof HTMLSpanElement) {
+        if (position === carretPosition) {
+          this.setSelectionRange(this.input.nativeElement, index);
+          return;
+        }
+        const blockValue = node.id.match(/(?<=block-).*/s)?.at(0) || '';
+
+        carretPosition += blockValue.length;
+        continue;
+      }
+
+      if (!(node instanceof Text)) continue;
+      
+      if (carretPosition + node.length >= position) {
+        let offset = position > carretPosition
+          ? position - carretPosition
+          : 0;
+
+        this.setSelectionRange(node, offset);
+        return;
+      }
+
+      carretPosition += node.length;
+    }
+
+    this.setSelectionRange(this.input.nativeElement, this.input.nativeElement.childNodes.length);
   }
 
   private cleanHtml (html: string): string {
@@ -171,44 +168,88 @@ export class InputWrapComponent implements ControlValueAccessor, OnInit, AfterVi
     return temp.innerHTML;
   }
 
-  onInput(event: InputEvent | {target: HTMLElement} ) {
-    const input = event.target as HTMLInputElement;
+  private getCaretPosition(): number | null {
+    const selection = getSelection();
+    if (selection == null) return null;
 
-    // console.log(input.value);
-    // console.log(input.innerHTML);
-    // console.log(input.innerText);
-    // console.log(event);
+    let carretPosition = 0;
 
-    const selStart = input.selectionStart;
+    const childNodes = Array.from(this.input.nativeElement.childNodes);
 
-    let inner = input.innerHTML.replaceAll(/(?:\xA0|&nbsp;)/g, ' ');
-    let reverted = this.revertStr(inner);
-    let cleanHtml = this.cleanHtml(OBJECT_HTML);
+    for (const [index, node] of childNodes.entries()) {
+        if (node === selection.anchorNode){
+            carretPosition += selection.anchorOffset;
+            return carretPosition;
+        }
 
-    let newHtml = reverted.replaceAll(/(?<=\s|^)###(?=\s|$)/g, cleanHtml);
+        if (node instanceof Text) {
+          carretPosition += node.length;
+          continue;
+        }
+
+        if (node instanceof HTMLDivElement) {
+          childNodes.splice(index + 1, 0, ...Array.from(node.childNodes));
+          continue;
+        }
     
-    if (inner != newHtml) {
-      
-      const initialPos = this.getPosition(input);
-      
-      // console.log(input.childNodes);
-      // console.log(initialPos);
+        if (node instanceof HTMLSpanElement) {
+          if (
+            selection.anchorNode === this.input.nativeElement &&
+            selection.anchorOffset === index
+          ) {
+            return carretPosition;
+          }
 
-      // console.log(input.childNodes[0]);
-      // console.log(node);
-      // console.log(node?.nextSibling);
+          const blockValue = node.id.match(/(?<=block-).*/s)?.at(0) || '';
 
-      input.innerHTML = reverted.replaceAll(/(?<=\s|^)###(?=\s|$)/g, cleanHtml);
+          carretPosition += blockValue.length;
 
-      // console.log(input.innerHTML);
-      
-      this.setPosition(initialPos, input);
-
-      // sel?.selectAllChildren(input);
-      // sel?.collapseToEnd();
+          continue;
+        }
+        
     }
 
-    this.onChange(this.revertStr(input.innerHTML));
+    return null;
   }
 
+  private convertHtlmToString(html: string): string | undefined {
+    // Extract lines from pattern:
+    //
+    //   {{line 1}}
+    //   <div> {{line 2}} </div>
+    //   <div> <br> </div>  <!-- (empty line) -->
+    //   <div> {{line 4}} </div>
+    //   ...
+    const lines = html
+      .replaceAll('<br>', '')
+      .match(/(?:^(?:(?!<div>).)*(?=(?:<div>)|$)|(?<=<div>)(?:(?!<div>).)*(?=<\/div))/g);
+
+    return lines?.join('\n');
+  }
+
+  private notifyChange() {
+    const html = this.removeBlocks(this.input.nativeElement.innerHTML);
+    const string = this.convertHtlmToString(html);
+
+    this.onChange(string);
+  }
+
+  onInput(input?: string) {
+    let currentValue = this.input.nativeElement.innerHTML.replaceAll(/(?:\xA0|&nbsp;)/g, ' ');
+
+    let newValue = input ?? currentValue;
+
+    let newHtml = this.setBlocks(newValue);
+
+    if (currentValue != newHtml) {
+
+      const initialPos = this.getCaretPosition() ?? 0;
+
+      this.input.nativeElement.innerHTML = newHtml;
+
+      this.setPosition(initialPos);
+    }
+
+    this.notifyChange();
+  }
 }

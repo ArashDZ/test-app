@@ -25,6 +25,11 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('dT') dT!: TemplateRef<any>;
   @ViewChild('inpwrp') inpwrp!: InputWrapComponent;
 
+  protected readonly items = [
+    {title: 'Item 1', value: '###', color: 'hotpink'},
+    {title: 'Item 2', value: '@@', color: 'green'},
+  ];
+
   constructor (
     @Optional() private peServ: PermServiceService | null,
     private san: DomSanitizer,
@@ -99,7 +104,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnChanges {
 
     // const digit = '[0-9]'
     // return Boolean(value.match(new RegExp(`^[0-9]{1,3}(?:\\.[0-9]{1,3}){0,2}(?:\\.[0-9]{0,3})?$`)))
+    if (event?.target && 'value' in event?.target) {
+      this.inp = event.target.value as string;
+    }
   }
-    
-  
 }

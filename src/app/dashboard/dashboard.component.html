@@ -19,12 +19,13 @@
   <button type="button" (click)="toggleWrp()">clear</button>
 
   <br>
-  <app-input-wrap *ngIf="sWrp" #inpwrp [(ngModel)]="inp" name="inp-wr" [minlength]="5" (ngModelChange)="checkInp($event)" [required]="true" ></app-input-wrap>
-
+  
+  <app-block-text-area #inpwrp [(ngModel)]="inp" name="inp-wr" [minlength]="5" [required]="true" [items]="items" ></app-block-text-area>
+  
 </form>
 <!-- <lib-img></lib-img> -->
 <lib-immmg></lib-immmg>
 <!-- <img alt="dash-image" src="img/assets/images/lubo-minar-j2RgHfqKhCM-unsplash.jpg"> -->
-<div>real value: {{inp}}</div>
+<div innerText="real value: {{inp}}" ></div>
 <img [src]="src">
 <input (input)="checkInp($any($event))">

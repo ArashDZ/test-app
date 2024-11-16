@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { PermServiceService } from '../services/perm-service/perm-service.service';
 import { InputWrapComponent } from '../framework/input-wrap/input-wrap.component';
 import { ImmmgModule } from '@test-pack/immmg';
+import { FrameworkModule } from '../framework/framework.module';
 // import { ImgComponent } from 'img';
 
 @NgModule({
@@ -23,6 +24,7 @@ import { ImmmgModule } from '@test-pack/immmg';
     InputWrapComponent,
     MatSelectModule,
     ImmmgModule,
+    FrameworkModule,
     // ImgComponent
   ],
   providers: [
