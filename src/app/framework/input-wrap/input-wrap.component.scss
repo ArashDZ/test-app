@@ -23,3 +23,26 @@
     margin: .1rem;
     white-space: pre;
 }
+
+.suggestions-box {
+    background-color: #eee;
+    box-shadow: 1px 1px 3px 1px gray;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    padding: 8px 0;
+
+    .suggestion-item{
+        padding: 5px;
+        user-select: none;
+        min-width: 100px;
+        border-radius: 2px;
+        
+        &:hover, &.selected {
+            transition: background-color ease-in-out .1s;
+            background-color: azure;
+            cursor: pointer;
+        }
+    }
+}

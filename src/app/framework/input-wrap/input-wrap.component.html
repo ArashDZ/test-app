@@ -1,3 +1,13 @@
-<div contenteditable id="text-input" class="input" #input (input)="onInput()" >
+<div contenteditable id="text-input" class="input" #input (input)="onInput()" (keydown)="handleKeyPress($event)" >
 
+</div>
+
+<div #suggestedBoxRef *ngIf="suggestedBlocks?.length" class="suggestions-box" [ngStyle]="{ left, top, right, bottom }">
+    <div
+        *ngFor="let item of suggestedBlocks; let index = index"
+        [style.color]="item.color"
+        [ngClass]="{'suggestion-item': true, selected: index === suggestedIndex }"
+        [innerText]="item.title"
+        (click)="addBlock(item)"
+    ></div>
 </div>
