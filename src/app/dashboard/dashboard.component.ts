@@ -1,7 +1,6 @@
-import { AfterViewChecked, AfterViewInit, Component, Inject, OnChanges, OnInit, Optional, SecurityContext, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnChanges, OnInit, Optional, SecurityContext, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { PermServiceService } from '../services/perm-service/perm-service.service';
 import { NgForm } from '@angular/forms';
-import { Dialog } from '@angular/cdk/dialog';
 import { InputWrapComponent } from '../framework/input-wrap/input-wrap.component';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -26,8 +25,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('inpwrp') inpwrp!: InputWrapComponent;
 
   protected readonly items = [
-    {title: 'Item 1', value: '###', color: 'hotpink'},
-    {title: 'Item 2', value: '@@', color: 'green'},
+    {title: 'Item 1', value: '{###}', color: 'hotpink'},
+    {title: 'Item 2', value: '{@@}', color: 'green'},
+    {title: 'Item 3', value: '{@3}', color: 'blue'},
+    {title: 'Item 4', value: '{#4}', color: 'purple'},
   ];
 
   constructor (

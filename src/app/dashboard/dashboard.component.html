@@ -19,8 +19,9 @@
   <button type="button" (click)="toggleWrp()">clear</button>
 
   <br>
-  
-  <app-block-text-area #inpwrp [(ngModel)]="inp" name="inp-wr" [minlength]="5" [required]="true" [items]="items" ></app-block-text-area>
+  <div style="float: right;">
+    <app-block-text-area #inpwrp [(ngModel)]="inp" name="inp-wr" [minlength]="5" [required]="true" [items]="items" ></app-block-text-area>
+  </div>
   
 </form>
 <!-- <lib-img></lib-img> -->
